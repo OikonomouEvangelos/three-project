@@ -1,9 +1,30 @@
-// app/page.tsx
 "use client";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Header } from "./components/layout/Header";
 import { BarberCard } from "./components/home/BarberCard";
+
+// 1. Ορίζουμε τα δεδομένα των barbers εδώ για να είναι εύκολο να τα αλλάξεις
+const BARBERS = [
+  {
+    id: 1,
+    name: "ΒΑΣΙΛΗΣ",
+    role: "Master Barber",
+    image: "/bill.png", // <--- Το όνομα του αρχείου σου στο public
+  },
+  {
+    id: 2,
+    name: "ΗΛΙΑΣ",
+    role: "Senior Stylist",
+    image: "/hlias.png", 
+  },
+  {
+    id: 3,
+    name: "ΣΤΑΥΡΟΣ",
+    role: "Beard Specialist",
+    image: "/stavros.png",
+  },
+];
 
 export default function Home() {
   const [step, setStep] = useState<'selection' | 'booking'>('selection');
@@ -23,9 +44,9 @@ export default function Home() {
         <div className="relative z-20 text-center">
           <motion.h2 
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-8xl font-light tracking-tighter mb-8"
+            className="text-5xl md:text-8xl font-light tracking-tighter mb-8 uppercase"
           >
-            PRECISION <span className="italic">CRAFT</span>
+            Precision <span className="italic">Craft</span>
           </motion.h2>
           <button 
             onClick={() => document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' })}
@@ -45,13 +66,17 @@ export default function Home() {
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               className="grid grid-cols-1 md:grid-cols-3 gap-8"
             >
-              {['Alex', 'John', 'Nick'].map((name) => (
+              {/* 2. Εδώ κάνουμε map πάνω από το array BARBERS */}
+              {BARBERS.map((barber) => (
                 <BarberCard 
-                  key={name}
-                  name={name}
-                  role="Master Barber"
-                  image={`/barber-${name.toLowerCase()}.jpg`}
-                  onSelect={() => { setSelectedBarber(name); setStep('booking'); }}
+                  key={barber.id}
+                  name={barber.name}
+                  role={barber.role}
+                  image={barber.image}
+                  onSelect={() => { 
+                    setSelectedBarber(barber.name); 
+                    setStep('booking'); 
+                  }}
                 />
               ))}
             </motion.div>
@@ -61,14 +86,19 @@ export default function Home() {
               initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }}
               className="bg-accent/10 p-12 border border-accent/20"
             >
-              <button onClick={() => setStep('selection')} className="mb-8 text-accent hover:text-cream flex items-center gap-2">
+              <button 
+                onClick={() => setStep('selection')} 
+                className="mb-8 text-accent hover:text-cream flex items-center gap-2 transition-colors"
+              >
                 ← BACK TO BARBERS
               </button>
-              <h3 className="text-3xl mb-12 uppercase tracking-widest">Select Date & Time for {selectedBarber}</h3>
-              {/* Add Calendar Component Here */}
-              <div className="grid grid-cols-4 gap-4">
+              <h3 className="text-3xl mb-12 uppercase tracking-widest">
+                Select Date & Time for <span className="text-cream">{selectedBarber}</span>
+              </h3>
+              
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {["10:00", "11:00", "12:00", "14:00", "15:00", "16:00"].map(time => (
-                  <button key={time} className="border border-accent/50 py-4 hover:bg-cream hover:text-black transition-colors">
+                  <button key={time} className="border border-accent/50 py-4 hover:bg-cream hover:text-black transition-all duration-300 uppercase text-xs tracking-widest font-bold">
                     {time}
                   </button>
                 ))}
